@@ -28,50 +28,42 @@ class Propagator:
     
     # check if the house is connected part of the list or not.           
     def is_house_present(self, house_no):
-        for index, house in enumerate(self.houses):
+        for index in range(len(self.houses_connected)):
+            house = self.houses_connected[index][0]
             if house.house_no == house_no:
                 return index
+        
         return -1
     
     # Add the house in the list.
     # Before adding check if the house is already connected
     def add_house(self, house:House):
-        propagator = self.propagators.get(propagator_no)
-        if propagator is None:
-            print("Propagator does not exist.")
-            return
-        
-        house_index = propagator.is_house_present(house_no)
-        if house_index != -1:
-            print("Connection already exists.")
-            return
-
-        house = House(house_no)
-        propagator.add_house(house)
+        if self.is_house_present(house.house_no) == -1 and self.power_remaining >= house.power_required:
+            self.houses_connected.append([house, house.power_required])
+            self.power_remaining -= house.power_required
+            return True
+        else:
+            return False
     
     # Remove the house from the list, before removing need to check
-    # if the house is in the assigned propoagtor list. 
+    # if the house is in the assigned propagator list. 
     def remove_house(self, house_no:int):
-        propagator = self.propagators.get(propagator_no)
-        if propagator is None:
-            print("Propagator does not exist.")
-            return False
+        house_index = self.is_house_present(house_no)
+        if house_index!=-1:
+            self.power_remaining += self.houses_connected[house_index][1]
+            del self.houses_connected[house_index]
+            return True
         
-        house_index = propagator.is_house_present(house_no)
-        if house_index == -1:
-            print("Connection does not exist.")
+        else:
             return False
-        
-        propagator.remove_house(house_index)
-        return True
                 
                         
 class PowerGrid:
     def __init__(self):
         self.propagators = dict()
         
-    # Adding the propagtor into in the dictionary. 
-    # Check if the propagator is not part of the dictioary already
+    # Adding the propagator into the dictionary. 
+    # Check if the propagator is not part of the dictionary already
     # It will not posess any value in the beginning. 
     def add_propagator(self, propagator:Propagator):
         if propagator_no in self.propagators:
@@ -84,7 +76,7 @@ class PowerGrid:
         
     
     # Removing the propagtor into in the dictionary. 
-    # Check if the propagator is part of the dictioary or not    
+    # Check if the propagator is part of the dictionary or not    
     def remove_propagator(self, propagator_no):
         propagator = self.propagators.get(propagator_no)
         if propagator is None:
