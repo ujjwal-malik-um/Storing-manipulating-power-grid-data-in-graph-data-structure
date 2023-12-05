@@ -6,7 +6,7 @@ class House:
         self.power_required = power
         self.assigned_propagator_no = -1
         
-    def assign_propagtor(self, number):
+    def assign_propagator(self, number):
         self.assigned_propagator_no = number
     
     def __str__(self):
